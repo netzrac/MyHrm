@@ -13,10 +13,12 @@ class HrmSearchCallbacks implements MultiDeviceSearch.SearchCallbacks {
 
     private final Context context;
     private final HrmSearchResults hsr;
+    private final HrmListUpdateCallbacl hluc;
 
-    public HrmSearchCallbacks(Context context) {
+    public HrmSearchCallbacks(Context context, HrmListUpdateCallbacl hluc) {
         this.context=context;
         this.hsr=new HrmSearchResults();
+        this.hluc=hluc;
     }
 
     @Override
@@ -30,6 +32,8 @@ class HrmSearchCallbacks implements MultiDeviceSearch.SearchCallbacks {
         String name=multiDeviceSearchResult.getDeviceDisplayName();
 
         hsr.add( multiDeviceSearchResult);
+
+        hluc.onDeviceFound( multiDeviceSearchResult);
 
     }
 
