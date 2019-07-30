@@ -26,10 +26,24 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        hluc=new HrmListUpdateCallbacl() {
+            @Override
+            public void onDeviceFound(com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult multiDeviceSearchResult) {
+                //TODO add found device to device list
+            }
+        };
+
+
         Intent intent=getIntent();
         String message=intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        TextView textView=(TextView) findViewById(R.id.textView);
-        textView.setText(message);
+
+        //
+        //TextView textView=(TextView) findViewById(R.id.textView);
+        //textView.setText(message);
+        //
+        //TODO initialize device list w/ last device
+
+        //TODO Start device search in the case START button pressed
         searchDevices();
 
 
@@ -48,19 +62,17 @@ public class SettingsActivity extends AppCompatActivity {
         EnumSet<DeviceType> deviceTypes = EnumSet.noneOf(com.dsi.ant.plugins.antplus.pcc.defines.DeviceType.class) ;
         deviceTypes.add(DeviceType.HEARTRATE);
 
-
-
         SearchCallbacks callbacks=new HrmSearchCallbacks(getApplicationContext(), hluc);
         mds=new MultiDeviceSearch(context, deviceTypes, callbacks);
 
     }
 
+    //TODO call connectHrm when leaving settings
     private void connectHrm( com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult multiDeviceSearchResult) {
 
         if (MainActivity.hrmReleaseHandle != null) {
             MainActivity.hrmReleaseHandle.close();
         }
-
 
         MainActivity.hrmReleaseHandle = AntPlusHeartRatePcc.requestAccess(getApplicationContext(),
                 multiDeviceSearchResult.getAntDeviceNumber(),
@@ -69,6 +81,18 @@ public class SettingsActivity extends AppCompatActivity {
                 MainActivity.hrmReceiver
         );
 
+    }
+
+    //TODO connect with last connected HRM
+    private static HrmReceiver connectConfiguredHrm() {
+
+        return null;
+    }
+
+    //TODO connect with last connected HRM
+    private static Client connectConfiguredServer() {
+
+        return null;
     }
 
 }
