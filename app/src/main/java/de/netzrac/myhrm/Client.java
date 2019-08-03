@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Client implements Runnable {
 
-	private ArrayList<DataNotifier> notifiers=new ArrayList<DataNotifier>();
+	private ArrayList<DataNotifier> notifiers=new ArrayList<>();
 	private Socket s;
 	private Scanner in;
 	private PrintWriter out;
@@ -67,8 +67,7 @@ public class Client implements Runnable {
 			s.close();
 		} catch (IOException e) {
 			System.out.println("Exception closing connection to server: "+e.getLocalizedMessage());
-			return;
-		} 
+		}
 		
 	}
 	

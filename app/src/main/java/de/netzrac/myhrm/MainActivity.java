@@ -4,19 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dsi.ant.plugins.antplus.pcc.AntPlusHeartRatePcc;
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements HrmHelper {
 
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements HrmHelper {
 
     @Override
     public AppCompatActivity getAppCompatActivity() {
-        return (AppCompatActivity) this;
+        return this;
     }
 
     public void sendMessage(View view) {
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements HrmHelper {
         setContentView(R.layout.activity_main);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        startStopButton=(Button) findViewById( R.id.startStopButton);
+        startStopButton=findViewById( R.id.startStopButton);
         init();
     }
 

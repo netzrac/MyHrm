@@ -1,7 +1,7 @@
 package de.netzrac.myhrm;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +20,6 @@ import com.dsi.ant.plugins.antplus.pcc.defines.DeviceType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -95,6 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("ApplySharedPref")
     @Override
     protected void onDestroy() {
         editor=sp.edit();
@@ -107,6 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
         String keyHrm=getString(R.string.pref_hrm);
         String valueHrm=viewHrm.getText().toString();
         editor.putString(keyHrm,valueHrm);
+
         editor.commit();
         mds.close();
 
@@ -148,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
      *
      * @param hrmString format 'name;id'
      * @return device id
-     * @throws Exception
+     * @throws Exception if no device number defined
      */
     public static int getAntDeviceNumber( String hrmString) throws Exception {
         StringTokenizer st=new StringTokenizer( hrmString, ";");
@@ -176,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity {
                     MainActivity.hrmReceiver
             );
         } catch (Exception e) {
-
+            ;
         }
     }
 
