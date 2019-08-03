@@ -15,19 +15,17 @@ import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements HrmHelper {
 
     public static HrmReceiver hrmReceiver=null;
     public static PccReleaseHandle<AntPlusHeartRatePcc> hrmReleaseHandle=null;
+    public static Client client=null;
 
-    //TextView mTextMessage;
-    public static final String EXTRA_MESSAGE="de.netzrac.myhrm.MESSAGE";
-
-    private String host="filamenti";
+   // private String host="filamenti";
   //  private String host="cpmiix";
-    private int port=1963;
-    private Client client;
+   // private int port=1963;
 
     @Override
     public void sendHeartrate( int heartrate) {
@@ -43,9 +41,6 @@ public class MainActivity extends AppCompatActivity implements HrmHelper {
 
     public void sendMessage(View view) {
         Intent intent=new Intent(this, de.netzrac.myhrm.SettingsActivity.class);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        String message=editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -76,15 +71,46 @@ public class MainActivity extends AppCompatActivity implements HrmHelper {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         try {
-            client=new Client( host, port);
+            client = new Client(host, port);
         } catch (IOException e) {
-            client=null;
+            client = null;
         }
-        hrmReceiver=new HrmReceiver(this);
 
-        //BottomNavigationView navView = findViewById(R.id.nav_view);
-        //mTextMessage = findViewById(R.id.message);
-        //navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        hrmReceiver = new HrmReceiver(this);
+
+
+        String hrmString=;
+        MainActivity.hrmReleaseHandle = AntPlusHeartRatePcc.requestAccess(getApplicationContext(),
+                getAntDeviceNumber(hrmString),
+                0,                                          // don't use proximityThreshold
+                MainActivity.hrmReceiver,
+                MainActivity.hrmReceiver
+        );
+
     }
+
+    public static int getAntDeviceNumber( String hrmString) {
+        StringTokenizer st=new StringTokenizer( hrmString, ";");
+        String token=st.nextToken();
+        if( st.hasMoreTokens()) {
+            return Integer.parseInt(st.nextToken());
+        }
+        return 0;
+    }
+
+    public static void connectHrm( String hrmString) {
+
+        if (MainActivity.hrmReleaseHandle != null) {
+            MainActivity.hrmReleaseHandle.close();
+        }
+
+        MainActivity.hrmReleaseHandle = AntPlusHeartRatePcc.requestAccess(getApplicationContext(),
+                multiDeviceSearchResult.getAntDeviceNumber(),
+                0,                                          // don't use proximityThreshold
+                MainActivity.hrmReceiver,
+                MainActivity.hrmReceiver
+        );
+    }
+
 
 }
