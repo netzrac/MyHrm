@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import static com.dsi.ant.plugins.antplus.pcc.MultiDeviceSearch.SearchCallbacks;
 
@@ -31,8 +32,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static SharedPreferences sp;
     private SharedPreferences.Editor editor;
-
-   // private HrmListUpdateCallbacl hluc;
 
     private List<String> listHrms=new ArrayList<>();
     private ArrayAdapter<String> adapter;
@@ -47,17 +46,10 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-   //     Intent intent=getIntent();
-   //     String message=intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
         Context context=getApplicationContext();
         sp=context.getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
 
-        //
-        //TextView textView=(TextView) findViewById(R.id.textView);
-        //textView.setText(message);
-        //
-        //TODO initialize hostname and port
+        // initialize hostname and port
         editHost=findViewById(R.id.editTextHostname);
         editPort=findViewById(R.id.editTextPort);
 
@@ -73,6 +65,10 @@ public class SettingsActivity extends AppCompatActivity {
         viewHrm=findViewById(R.id.selectedHrm);
         viewHrm.setText(sp.getString(getString(R.string.pref_hrm), ""));
 
+        listView=findViewById(R.id.listViewHrms);
+        adapter=new ArrayAdapter<String>( this, R.layout.list_item, R.id.itemName, listHrms);
+        listView.setAdapter(adapter);
+
         viewHrm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,10 +81,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
-        listView=findViewById(R.id.listViewHrms);
-        adapter=new ArrayAdapter<String>( this, R.layout.list_item, R.id.itemName, listHrms);
-        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                             @Override
@@ -138,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
         EnumSet<DeviceType> deviceTypes = EnumSet.noneOf(com.dsi.ant.plugins.antplus.pcc.defines.DeviceType.class) ;
         deviceTypes.add(DeviceType.HEARTRATE);
 
-        SearchCallbacks callbacks=new HrmSearchCallbacks(getApplicationContext(), this);
+        SearchCallbacks callbacks=new HrmSearchCallbacks(getApplicationContext());
         HrmSearchResults.clear();
         mds=new MultiDeviceSearch(context, deviceTypes, callbacks);
 
@@ -152,6 +144,22 @@ public class SettingsActivity extends AppCompatActivity {
         adapter.add(hrmDeviceString);
     }
 
+    /**
+     *
+     * @param hrmString format 'name;id'
+     * @return device id
+     * @throws Exception
+     */
+    public static int getAntDeviceNumber( String hrmString) throws Exception {
+        StringTokenizer st=new StringTokenizer( hrmString, ";");
+        String token=st.nextToken();
+        if( st.hasMoreTokens()) {
+            return Integer.parseInt(st.nextToken());
+        }
+        throw new Exception( "Invalid device number.");
+    }
+
+
     // call connectHrm when leaving settings
     private void connectHrm( String hrmString) {
 
@@ -159,27 +167,17 @@ public class SettingsActivity extends AppCompatActivity {
             MainActivity.hrmReleaseHandle.close();
         }
 
-        MainActivity.hrmReleaseHandle = AntPlusHeartRatePcc.requestAccess(getApplicationContext(),
-                MainActivity.getAntDeviceNumber(hrmString),
-                0,                                          // don't use proximityThreshold
-                MainActivity.hrmReceiver,
-                MainActivity.hrmReceiver
-        );
+        try {
 
-    }
-/**
-    //TODO connect with last connected HRM
-    private static HrmReceiver connectConfiguredHrm() {
+            MainActivity.hrmReleaseHandle = AntPlusHeartRatePcc.requestAccess(getApplicationContext(),
+                    SettingsActivity.getAntDeviceNumber(hrmString),
+                    0,                                          // don't use proximityThreshold
+                    MainActivity.hrmReceiver,
+                    MainActivity.hrmReceiver
+            );
+        } catch (Exception e) {
 
-        return null;
+        }
     }
 
-    //TODO connect with last connected client
-    private static Client connectConfiguredServer() {
-        String prefHost=sp.getString(getString(R.string.pref_host), "localhost");
-        String prefPort=sp.getString(getString(R.string.pref_port), "1963");
-
-        return null;
-    }
-**/
 }

@@ -12,10 +12,16 @@ public class Client implements Runnable {
 	private Socket s;
 	private Scanner in;
 	private PrintWriter out;
+	private boolean close;
+
+	public void close() {
+		close=true;
+	}
 
 	public enum  Commands { CMD_RESET, CMD_HELO};
 	
 	public Client(String host, int port) throws IOException {
+		close=false;
 		try {
 			s = new Socket(host,port); // connect to server
 			in = new Scanner(s.getInputStream());
@@ -52,6 +58,9 @@ public class Client implements Runnable {
 	        	System.out.println("UKWN: "+data);
 	        	break;
 	        }
+	        if( close) {
+	        	break;
+			}
 	    }
 	
 		try {

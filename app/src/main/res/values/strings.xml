@@ -31,4 +31,6 @@
     <string name="pref_port">de.netzrac.myhrm.pref_port</string>
     <string name="pref_hrm">de.netzrac.myhrm.pref_hrm</string>
     <string name="pref_file">de.netzrac.myhrm.pref_appl_file</string>
+    <string name="STOP">STOP</string>
+    <string name="START">START</string>
 </resources>

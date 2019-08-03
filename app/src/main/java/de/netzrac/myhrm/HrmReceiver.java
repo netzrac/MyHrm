@@ -2,8 +2,6 @@ package de.netzrac.myhrm;
 
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.dsi.ant.plugins.antplus.pcc.AntPlusHeartRatePcc;
 import com.dsi.ant.plugins.antplus.pcc.defines.DeviceState;
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag;
@@ -26,8 +24,9 @@ public class HrmReceiver implements IPluginAccessResultReceiver<AntPlusHeartRate
     @Override
     public void onResultReceived(AntPlusHeartRatePcc antPlusHeartRatePcc, RequestAccessResult requestAccessResult, DeviceState deviceState) {
 
-        antPlusHeartRatePcc.subscribeHeartRateDataEvent(this);
-
+        if( antPlusHeartRatePcc!=null) {
+            antPlusHeartRatePcc.subscribeHeartRateDataEvent(this);
+        }
     }
 
     @Override

@@ -15,43 +15,23 @@ import java.util.List;
 class HrmSearchCallbacks implements MultiDeviceSearch.SearchCallbacks {
 
     private Context context;
-//    private final HrmListUpdateCallbacl hluc;
-    private SettingsActivity settingsActivity;
-/**
 
-    public HrmSearchCallbacks(Context context, HrmListUpdateCallbacl hluc) {
-        this.context=context;
-        this.hluc=hluc;
-    }
-**/
-    public HrmSearchCallbacks(Context applicationContext, SettingsActivity settingsActivity) {
+    public HrmSearchCallbacks(Context applicationContext) {
         this.context=applicationContext;
-        this.settingsActivity=settingsActivity;
     }
 
     @Override
     public void onSearchStarted(MultiDeviceSearch.RssiSupport rssiSupport) {
-
     }
 
     @Override
     public void onDeviceFound(com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch.MultiDeviceSearchResult multiDeviceSearchResult) {
-
         String name=multiDeviceSearchResult.getDeviceDisplayName();
-
         HrmSearchResults.add( multiDeviceSearchResult);
-
-//        settingsActivity.addHrmDevice("dfsdfdsfsf");
-
-      //  settingsActivity.addHrmDevice( multiDeviceSearchResult.getDeviceDisplayName()+";"+multiDeviceSearchResult.getAntDeviceNumber());
-
-        //hluc.onDeviceFound( multiDeviceSearchResult);
-
     }
 
     @Override
     public void onSearchStopped(RequestAccessResult requestAccessResult) {
-
     }
 
 };
