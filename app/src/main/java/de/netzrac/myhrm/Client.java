@@ -32,16 +32,16 @@ public class Client implements Runnable {
 	private Socket s;
 	private Scanner in;
 	private PrintWriter out;
-	private boolean close;
+	private boolean closeConnection;
 
-	public void close() {
-		close=true;
+	public void setCloseConnection() {
+		closeConnection=true;
 	}
 
 	public enum  Commands { CMD_RESET, CMD_HELO};
 	
 	public Client(String host, int port) throws IOException {
-		close=false;
+		closeConnection=false;
 		try {
 			s = new Socket(host,port); // connect to server
 			in = new Scanner(s.getInputStream());
@@ -78,12 +78,17 @@ public class Client implements Runnable {
 	        	System.out.println("UKWN: "+data);
 	        	break;
 	        }
-	        if( close) {
+	        if( closeConnection) {
 	        	break;
 			}
 	    }
 	
 		try {
+            out.println( "X");
+		    s.shutdownInput();
+		    s.shutdownOutput();
+            in.close();
+            out.close();
 			s.close();
 		} catch (IOException e) {
 			System.out.println("Exception closing connection to server: "+e.getLocalizedMessage());

@@ -115,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
     private void close() {
         setIsStarted(false);
         MainActivity.hrmReleaseHandle.close();
-        client.close();
+        client.setCloseConnection();
+        client=null;
     }
 
     public void toggleStartStop( View view) {
