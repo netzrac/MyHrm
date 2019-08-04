@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         startStopButton=findViewById( R.id.startStopButton);
-        init();
+        setIsStarted(false);
+        //init();
     }
 
     /**
@@ -114,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
 
     private void close() {
         setIsStarted(false);
-        MainActivity.hrmReleaseHandle.close();
+        hrmReleaseHandle.close();
+        hrmReleaseHandle=null;
         client.setCloseConnection();
         client=null;
     }
