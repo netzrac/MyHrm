@@ -82,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // initialize device list w/ last device
         viewHrm=findViewById(R.id.selectedHrm);
-        viewHrm.setText(sp.getString(getString(R.string.pref_hrm), ""));
+        viewHrm.setText(sp.getString(getString(R.string.pref_hrm), getString( R.string.selectedHrmDevice)));
 
         listView=findViewById(R.id.listViewHrms);
         adapter=new ArrayAdapter<String>( this, R.layout.list_item, R.id.itemName, listHrms);
