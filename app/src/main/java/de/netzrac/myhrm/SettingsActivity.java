@@ -130,17 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         editor.commit();
         mds.close();
-
-        // reconnect client
-        try {
-            MainActivity.client=new Client( valueHost, Integer.parseInt(valuePort));
-        } catch (IOException e) {
-            MainActivity.client=null;
-        }
-
-        // reconnect HRM
-        connectHrm(valueHrm);
-
         super.onDestroy();
     }
 
@@ -178,27 +167,6 @@ public class SettingsActivity extends AppCompatActivity {
             return Integer.parseInt(st.nextToken());
         }
         throw new Exception( "Invalid device number.");
-    }
-
-
-    // call connectHrm when leaving settings
-    private void connectHrm( String hrmString) {
-
-        if (MainActivity.hrmReleaseHandle != null) {
-            MainActivity.hrmReleaseHandle.close();
-        }
-
-        try {
-
-            MainActivity.hrmReleaseHandle = AntPlusHeartRatePcc.requestAccess(getApplicationContext(),
-                    SettingsActivity.getAntDeviceNumber(hrmString),
-                    0,                                          // don't use proximityThreshold
-                    MainActivity.hrmReceiver,
-                    MainActivity.hrmReceiver
-            );
-        } catch (Exception e) {
-            ;
-        }
     }
 
 }

@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,15 +38,15 @@ import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity implements HrmHelper, Serializable {
 
-    public static HrmReceiver hrmReceiver=null;
-    public static PccReleaseHandle<AntPlusHeartRatePcc> hrmReleaseHandle=null;
-    public static Client client=null;
+    public static HrmReceiver hrmReceiver = null;
+    public static PccReleaseHandle<AntPlusHeartRatePcc> hrmReleaseHandle = null;
+    public static Client client = null;
     private boolean isStarted;
     private Button startStopButton;
 
     @Override
-    public void sendHeartrate( int heartrate) {
-        if( client!=null) {
+    public void sendHeartrate(int heartrate) {
+        if (client != null) {
             client.sendHeartrate(heartrate);
         }
     }
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
     }
 
     public void sendMessage(View view) {
-        Intent intent=new Intent(this, de.netzrac.myhrm.SettingsActivity.class);
+        Intent intent = new Intent(this, de.netzrac.myhrm.SettingsActivity.class);
         startActivity(intent);
     }
 
@@ -65,9 +66,8 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
         setContentView(R.layout.activity_main);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        startStopButton=findViewById( R.id.startStopButton);
+        startStopButton = findViewById(R.id.startStopButton);
         setIsStarted(false);
-        //init();
     }
 
     /**
@@ -77,14 +77,16 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
 
         setIsStarted(true);
 
-        SharedPreferences sp=getApplicationContext().getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
-        String host=sp.getString(getString(R.string.pref_host), "localhost");
-        int port=Integer.parseInt(sp.getString(getString( R.string.pref_port),"1963"));
+        SharedPreferences sp = getApplicationContext().getSharedPreferences(getString(R.string.pref_file), MODE_PRIVATE);
+        String host = sp.getString(getString(R.string.pref_host), "localhost");
+        int port = Integer.parseInt(sp.getString(getString(R.string.pref_port), "1963"));
         try {
             client = new Client(host, port);
         } catch (IOException e) {
+            setHeartRateText( "Error connecting to client: "+e.getLocalizedMessage());
             client = null;
             setIsStarted(false);
+            return;
         }
 
         hrmReceiver = new HrmReceiver(this);
@@ -99,13 +101,14 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
             );
         } catch (Exception e) {
             setIsStarted(false);
+            setHeartRateText( "Error connecting to HRM: "+e.getLocalizedMessage());
         }
 
     }
 
-    private void setIsStarted( boolean isStarted) {
-        this.isStarted=isStarted;
-        if( isStarted) {
+    private void setIsStarted(boolean isStarted) {
+        this.isStarted = isStarted;
+        if (isStarted) {
             startStopButton.setText(R.string.STOP);
         } else {
             startStopButton.setText(R.string.START);
@@ -116,17 +119,22 @@ public class MainActivity extends AppCompatActivity implements HrmHelper, Serial
     private void close() {
         setIsStarted(false);
         hrmReleaseHandle.close();
-        hrmReleaseHandle=null;
+        hrmReleaseHandle = null;
         client.setCloseConnection();
-        client=null;
+        client = null;
     }
 
-    public void toggleStartStop( View view) {
-        if( isStarted) {
+    public void toggleStartStop(View view) {
+        if (isStarted) {
             close();
         } else {
             init();
         }
+    }
+
+    public void setHeartRateText(String string) {
+        TextView textView = findViewById(R.id.heartRate);
+        textView.setText(string);
     }
 
 }
